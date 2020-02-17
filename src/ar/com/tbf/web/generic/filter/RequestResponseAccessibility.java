@@ -1,5 +1,6 @@
 package ar.com.tbf.web.generic.filter;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -19,6 +20,8 @@ public class RequestResponseAccessibility {
 		
 		requestResponseContainer.get().setRequest(  request  );
 		requestResponseContainer.get().setResponse( response );
+		
+		
 	}
 	
 	public static HttpServletRequest getRequest() {
@@ -78,6 +81,16 @@ public class RequestResponseAccessibility {
 		return ok;
 	}
 	
+	public static String getRealPath() {
+		
+		return getRealPath( File.separator );
+	}
+
+	public static String getRealPath( String path ) {
+		
+		return requestResponseContainer.get().request.getSession().getServletContext().getRealPath( path );
+	}
+
 	/**
 	 * request.getScheme() +"://"+ request.getServerName() +":"+ request.getServerPort() + request.getContextPath()
 	 * 
