@@ -29,7 +29,10 @@ public class RequestResponseAccessibilityFilter implements Filter{
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+    
+    	RequestResponseAccessibility.setServletContext( filterConfig.getServletContext() );
     }
+    
 
     @Override
     public void destroy() {

@@ -4,6 +4,8 @@ import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,6 +26,11 @@ public class RequestResponseAccessibility {
 		
 	}
 	
+	public static void setServletContext( ServletContext servletContext ) {
+		
+		requestResponseContainer.get().servletContext = servletContext;
+		
+	}
 	public static HttpServletRequest getRequest() {
 		
 		return requestResponseContainer.get().getRequest();
@@ -88,7 +95,7 @@ public class RequestResponseAccessibility {
 
 	public static String getRealPath( String path ) {
 		
-		return requestResponseContainer.get().request.getSession(true).getServletContext().getRealPath( path );
+		return requestResponseContainer.get().servletContext.getRealPath( path );
 	}
 
 	/**
@@ -117,6 +124,7 @@ public class RequestResponseAccessibility {
 		private HttpServletResponse response = null;
 		private String remoteAddr = "";
 		private String remoteHost = "";
+		private ServletContext servletContext = null;
 		
 		public HttpServletRequest getRequest() {
 			return request;
