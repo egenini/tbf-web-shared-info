@@ -88,7 +88,7 @@ public class RequestResponseAccessibility {
 
 	public static String getRealPath( String path ) {
 		
-		return requestResponseContainer.get().request.getSession().getServletContext().getRealPath( path );
+		return requestResponseContainer.get().request.getSession(true).getServletContext().getRealPath( path );
 	}
 
 	/**
