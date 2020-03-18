@@ -175,7 +175,9 @@ public class RequestResponseAccessibility {
 	    	
 			String scheme = request.getHeader("x-forwarded-proto");
 			
-	        return scheme == null ? request.getScheme() : scheme +"://"+ request.getServerName() +":"+ request.getServerPort() + request.getContextPath();
+			scheme = (scheme == null || scheme.isEmpty() ? request.getScheme() : scheme );
+			
+	        return scheme +"://"+ request.getServerName() +":"+ request.getServerPort() + request.getContextPath();
 	    }
 
 		public String whoIAm(){
