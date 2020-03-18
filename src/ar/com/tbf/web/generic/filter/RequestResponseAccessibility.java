@@ -22,8 +22,6 @@ public class RequestResponseAccessibility {
 		
 		requestResponseContainer.get().setRequest(  request  );
 		requestResponseContainer.get().setResponse( response );
-		
-		
 	}
 	
 	public static void setServletContext( ServletContext servletContext ) {
@@ -39,6 +37,11 @@ public class RequestResponseAccessibility {
 	public static HttpServletResponse getResponse() {
 		
 		return requestResponseContainer.get().getResponse();
+	}
+
+	public static String getScheme() {
+		
+		return requestResponseContainer.get().getScheme();
 	}
 
 	public static String getQuery() {
@@ -125,6 +128,7 @@ public class RequestResponseAccessibility {
 		private String remoteAddr = "";
 		private String remoteHost = "";
 		private ServletContext servletContext = null;
+		private String scheme = "";
 		
 		public HttpServletRequest getRequest() {
 			return request;
@@ -172,17 +176,24 @@ public class RequestResponseAccessibility {
 		}
 		
 		public String getApplicationURL(){
-	    	
-			String scheme = request.getHeader("x-forwarded-proto");
-			
-			scheme = (scheme == null || scheme.isEmpty() ? request.getScheme() : scheme );
-			
-	        return scheme +"://"+ request.getServerName() +":"+ request.getServerPort() + request.getContextPath();
+	    				
+	        return this.getScheme() +"://"+ request.getServerName() +":"+ request.getServerPort() + request.getContextPath();
 	    }
 
 		public String whoIAm(){
 	    	
 	        return this.getRequest().getContextPath();
-	    }	
+	    }
+		public String getScheme() {
+			
+			scheme = request.getHeader("x-forwarded-proto");
+			
+			scheme = (scheme == null || scheme.isEmpty() ? request.getScheme() : scheme );
+
+			return scheme;
+		}
+		public void setScheme(String scheme) {
+			this.scheme = scheme;
+		}	
 	}
 }
