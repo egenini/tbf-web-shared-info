@@ -109,6 +109,11 @@ public class RequestResponseAccessibility {
 		
 		return requestResponseContainer.get().getApplicationURL();
 	}
+
+	public static String getApplicationURL( String httpScheme ) {
+		
+		return requestResponseContainer.get().getApplicationURL(httpScheme);
+	}
 	
 	/**
 	 * @return el nombre de la aplicación obtenida del request.
@@ -141,19 +146,22 @@ public class RequestResponseAccessibility {
 			this.setUrl(   url +"/"+ contextPath    );
 			this.setQuery( request.getQueryString() == null ? "" : request.getQueryString() );
 			
+			System.out.println( "URL "+ this.getUrl() );
+
+			// buscamos scheme para ver si en la url viene de forma correcta porque hay un problema con este dato cuando está detrás de un proxy o balanceador, también -al parecer detrás de un apache-
+			int pos = url.indexOf(":");
+			scheme = url.substring(0, pos);
+				
 			this.request = request;
 
-	        if (request != null) {
-	        	
-	            remoteAddr = request.getHeader("X-FORWARDED-FOR");
-	            
-	            if (remoteAddr == null || remoteAddr.isEmpty() ) {
-	            	
-	                remoteAddr = request.getRemoteAddr();
-	            }
-	            
-	            remoteHost = request.getRemoteHost();	            
-	        }
+            remoteAddr = request.getHeader("X-FORWARDED-FOR");
+            
+            if (remoteAddr == null || remoteAddr.isEmpty() ) {
+            	
+                remoteAddr = request.getRemoteAddr();
+            }
+            
+            remoteHost = request.getRemoteHost();	            
 		}
 		public HttpServletResponse getResponse() { 
 			return response;
@@ -179,15 +187,25 @@ public class RequestResponseAccessibility {
 	        return this.getScheme() +"://"+ request.getServerName() +":"+ request.getServerPort() + request.getContextPath();
 	    }
 
+		public String getApplicationURL(String httpScheme) {
+
+			return httpScheme +"://"+ request.getServerName() +":"+ request.getServerPort() + request.getContextPath();
+		}
+
 		public String whoIAm(){
 	    	
 	        return this.getRequest().getContextPath();
 	    }
 		public String getScheme() {
 			
-			scheme = request.getHeader("x-forwarded-proto");
+			String schemeFromHeader = request.getHeader("x-forwarded-proto");
 			
-			scheme = (scheme == null || scheme.isEmpty() ? request.getScheme() : scheme );
+			if( (schemeFromHeader != null && ! schemeFromHeader.isEmpty() ) && scheme.equals("http") ) {
+				
+				scheme = schemeFromHeader;
+			}
+			
+			scheme = ( scheme.equals("http") ? request.getScheme() : scheme );
 
 			return scheme;
 		}
